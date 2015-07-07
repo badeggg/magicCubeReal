@@ -98,8 +98,8 @@
 			return cube;
 		};
 	}());
-	var userRotateCubeIni = function(){
-	//执行该函数，将使得用户可以控制旋转整个魔方
+	var playerRotateCubeIni = function(){
+	//执行该函数，玩家将可以控制旋转整个魔方
 		var cubeCon = document.getElementById('cubeContainer'),
 			cube = document.getElementById('cube');
 		cube.style.transform = 'scale(' + cubeParameters.scale + ') perspective(1500px) rotateX(-25deg) rotateY(-32deg) rotateZ(0deg)';
@@ -142,6 +142,25 @@
 			cubeCon.addEventListener('mousemove', handlerMoveF(event.pageX, event.pageY), false);
 		}, false);
 	};
+	var playerScaleCubeIni = function(){
+	//执行该函数，玩家将可以使用鼠标滚轮控制魔方大小
+		var cubeCon = document.getElementById('cubeContainer'),
+			cube = document.getElementById('cube'),
+			change = 0.8,
+			regexp = /scale\(([+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|))\)/g,
+			result;
+		cubeCon.addEventListener('wheel', handler, false);
+		function handler(event){
+			event.preventDefault();
+			event.wheelDelta > 0
+			? change = 1.1
+			: change = 0.9;
+			result = regexp.exec( cube.style.transform );
+			( change = (+result[1])*change ) < 0.03 && (change = +result[1]);
+			cube.style.transform =  'scale(' + change + ')' + cube.style.transform.substring( regexp.lastIndex );
+			regexp.lastIndex = 0;
+		};
+	};
 	var initializeCubeParameter = function(rank){///////////////需要改，要求自己获得rank值
 		cubeParameters.rank = rank;
 		cubeParameters.scale = (0.7 + Math.log10(rank)) * 2 / rank;
@@ -149,6 +168,7 @@
 	document.addEventListener('DOMContentLoaded', function(){
 		initializeCubeParameter(6);
 		document.getElementById('cube').appendChild( buildCubeFragment() );
-		userRotateCubeIni();
+		playerRotateCubeIni();
+		playerScaleCubeIni();
 	}, false);
 }());

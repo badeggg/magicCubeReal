@@ -33,11 +33,6 @@ main{
 	border: 5px solid white;
 	border-radius: 3px;
 	position: absolute;
-	margin: auto;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
 	transform-origin: 50% 50%;
 }
 #cube>[color = 'blue']{
