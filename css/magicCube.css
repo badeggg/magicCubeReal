@@ -58,4 +58,35 @@ main{
 	min-width: 300px;
 	background: #89a;
 }
+#cube>[buttonClass]{
+	background-color: black;
+	position: absolute;
+}
+#cube>[buttonClass]:hover{
+	background-color: grey;
+}
+#cube>[buttonClass = 'bigTop']{
+	width: 60px;
+	height: 20px;
+	margin: 5px 25px 85px;
+	transform-origin: 30px 50px;
+}
+#cube>[buttonClass = 'bigBottom']{
+	width: 60px;
+	height: 20px;
+	margin: 85px 25px 5px;
+	transform-origin: 30px -30px;
+}
+#cube>[buttonClass = 'bigLeft']{
+	width: 20px;
+	height: 60px;
+	margin: 25px 85px 25px 5px;
+	transform-origin: 50px 30px;
+}
+#cube>[buttonClass = 'bigRight']{
+	width: 20px;
+	height: 60px;
+	margin: 25px 5px 25px 85px;
+	transform-origin: -30px 30px;
+}
 
