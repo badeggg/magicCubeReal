@@ -142,21 +142,25 @@
 			};
 			function buildOne(face){
 			//执行此函数将建立指定surface上的buttons
+				var rank = cubeParameters.rank;
+				if(rank <= 1){
+					return;
+				}
 				var buttons = document.createDocumentFragment(),
-					rank = cubeParameters.rank,
 					center = rank / 2,
 					but,
 					i = 0,
 					j = 0,
 					controlRotate = '',
+					controlFloors = '',
 					className = '',
 					rotate = shareInformation.buildSurfacesDB[face].rotate,
 					translate = 'translate' + shareInformation.buildSurfacesDB[face].translateAxis + '(' + shareInformation.buildSurfacesDB[face].translateSign + rank / 2 * 111.5 + 'px)';
 				function buildSingleButton(){
-				//仅作为buildOne()的内部函数，不需要参数，使用buildOne()中的变量
+				//仅作为buildOne()的内部函数，不需要参数，使用buildOne()中的变量.共有程序段的集中
 					but = document.createElement('div');
 					but.setAttribute('controlRotate', controlRotate);//此attribute表明button控制旋转的轴和旋转方向
-					but.setAttribute('controlFloors', controlRotate[1] + j);//此attribute表明button控制的应该旋转的floor(s)
+					but.setAttribute('controlFloors', controlFloors);//此attribute表明button控制的应该旋转的floor(s)
 					but.setAttribute('buttonClass', buttonClass);//此attribute将buttons分类，从而可以使用css对他们进行样式控制
 					//把button部署到二维平面里合适的位置
 					but.style.transform = 'translate(' + (j + 0.5 - center) * 110 + 'px,' + (i + 0.5 - center) *110 + 'px)';
@@ -165,7 +169,7 @@
 					but.style.transform = translate + but.style.transform;
 					buttons.appendChild(but);
 				}
-				//建立控制一层旋转的buttons
+				//构建控制一层旋转的buttons
 				for(i = 0; i < rank; i++){
 					//创建上、下的buttons
 					if(i === 0 || i === rank - 1){
@@ -177,20 +181,56 @@
 						: (
 							controlRotate = db[face]['columnEnd'],
 							buttonClass = 'bigBottom'
-						);
+						);						
 						for(j = 0; j < rank; j++){
+							controlFloors = controlRotate[1] + j;
 							buildSingleButton();
 						}
 					} 
-					//创建左、右buttons
+					//创建左、右buttons					
 					j = 0;
 					controlRotate = db[face]['rowStart'];
+					controlFloors = controlRotate[1] + i;
 					buttonClass = 'bigLeft';
 					buildSingleButton();
 					j = rank - 1;
 					controlRotate = db[face]['rowEnd'];
+					controlFloors = controlRotate[1] + i;
 					buttonClass = 'bigRight';
 					buildSingleButton();
+				}
+				//构建一次旋转两层的buttons
+				if(rank === 2){
+					return buttons;
+				}
+				for(i = 0; i < rank; i++){
+					if(i === 0 || i === rank - 1){
+						i === 0
+						? (
+							controlRotate = db[face]['columnStart'],
+							buttonClass = 'smallTop'
+						)
+						: (
+							controlRotate = db[face]['columnEnd'],
+							buttonClass = 'smallBottom'
+						);
+						for(j = 0; j < rank - 1; j++){
+							controlFloors = controlRotate[1] + j + controlRotate[1] + (j + 1);
+							buildSingleButton();
+						}
+					}
+					if(i !== rank - 1){						
+						j = 0;
+						controlRotate = db[face]['rowStart'];
+						controlFloors = controlRotate[1] + i + controlRotate[1] + (i + 1);
+						buttonClass = 'smallLeft';
+						buildSingleButton();
+						j = rank - 1;
+						controlRotate = db[face]['rowEnd'];
+						controlFloors = controlRotate[1] + i + controlRotate[1] + (i + 1);
+						buttonClass = 'smallRight';
+						buildSingleButton();
+					}
 				}
 				return buttons;
 			}
@@ -280,7 +320,7 @@
 		cubeParameters.scale = (0.7 + Math.log10(rank)) * 2 / rank;
 	};
 	document.addEventListener('DOMContentLoaded', function(){
-		initializeCubeParameter(4);
+		initializeCubeParameter(3);
 		document.getElementById('cube').appendChild( buildCubeFragment() );
 		playerRotateCubeIni();
 		playerScaleCubeIni();
