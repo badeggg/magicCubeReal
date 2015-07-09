@@ -232,6 +232,37 @@
 						buildSingleButton();
 					}
 				}
+				//构建一次旋转三层的buttons
+				if(rank === 3){
+					return buttons;
+				}
+				for(i = 1; i < rank - 1; i++){
+					if(i === 1 || i === rank - 2){
+						i === 1
+						? (
+							controlRotate = db[face]['columnStart'],
+							buttonClass = 'bigTop'
+						)
+						: (
+							controlRotate = db[face]['columnEnd'],
+							buttonClass = 'bigBottom'
+						);						
+						for(j = 1; j < rank - 1; j++){
+							controlFloors = controlRotate[1] + (j - 1) + controlRotate[1] + j + controlRotate[1] + (j + 1);
+							buildSingleButton();
+						}
+					}
+					j = 1;
+					controlRotate = db[face]['rowStart'];
+					controlFloors = controlRotate[1] + (i - 1) + controlRotate[1] + i + controlRotate[1] + (i + 1);
+					buttonClass = 'bigLeft';
+					buildSingleButton();
+					j = rank - 2;
+					controlRotate = db[face]['rowEnd'];
+					controlFloors = controlRotate[1] + (i - 1) + controlRotate[1] + i + controlRotate[1] + (i + 1);
+					buttonClass = 'bigRight';
+					buildSingleButton();
+				}
 				return buttons;
 			}
 			return function(){
@@ -320,7 +351,7 @@
 		cubeParameters.scale = (0.7 + Math.log10(rank)) * 2 / rank;
 	};
 	document.addEventListener('DOMContentLoaded', function(){
-		initializeCubeParameter(3);
+		initializeCubeParameter(7);
 		document.getElementById('cube').appendChild( buildCubeFragment() );
 		playerRotateCubeIni();
 		playerScaleCubeIni();
