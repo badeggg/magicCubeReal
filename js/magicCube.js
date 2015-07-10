@@ -14,48 +14,48 @@
 			//查询出floor的轴线方向, 部署到各个平面的rotate值
 			//（唉，我去，根本注释不清楚啊。希望我再看这段代码时能看明白。）
 				front: {
-					row: 'x',
-					column: 'y',
+					row: 'X',
+					column: 'Y',
 					color: 'blue',
 					rotate: '',
 					translateAxis: 'Z',
 					translateSign: '+'
 				},
 				left: {
-					row: 'z',
-					column: 'y',
+					row: 'Z',
+					column: 'Y',
 					color: 'orange',
 					rotate: 'rotateY(-90deg)',
 					translateAxis: 'X',
 					translateSign: '-'
 				},
 				top: {
-					row: 'x',
-					column: 'z',
+					row: 'X',
+					column: 'Z',
 					color: 'yellow',
 					rotate: 'rotateX(90deg)',
 					translateAxis: 'Y',
 					translateSign: '-'
 				},
 				back: {
-					row: 'x',
-					column: 'y',
+					row: 'X',
+					column: 'Y',
 					color: 'green',
 					rotate: '',
 					translateAxis: 'Z',
 					translateSign: '-'
 				},
 				right: {
-					row: 'z',
-					column: 'y',
+					row: 'Z',
+					column: 'Y',
 					color: 'red',
 					rotate: 'rotateY(-90deg)',
 					translateAxis: 'X',
 					translateSign: '+'
 				},
 				bottom: {
-					row: 'x',
-					column: 'z',
+					row: 'X',
+					column: 'Z',
 					color: 'whitesmoke',
 					rotate: 'rotateX(90deg)',
 					translateAxis: 'Y',
@@ -79,7 +79,7 @@
 					cell = document.createElement('div');
 					cell.setAttribute('color', color);
 					cell.setAttribute('surface', face);
-					cell.setAttribute( 'floor', row + (i % rank + 1) + column + (Math.floor(i / rank) + 1) );
+					cell.setAttribute( 'floor', row + (i % rank) + column + (Math.floor(i / rank)) );
 					//形成多个cell组成的一个面
 					cell.style.transform = 'translate(' + (i % rank + 0.5 - center) * 100 + '%,' + (Math.floor(i / rank) + 0.5 - center) *100 + '%)';
 					//把surface部署到合适的位置
@@ -215,19 +215,19 @@
 							buttonClass = 'smallBottom'
 						);
 						for(j = 0; j < rank - 1; j++){
-							controlFloors = controlRotate[1] + j + controlRotate[1] + (j + 1);
+							controlFloors = controlRotate[1] + j + ' ' + controlRotate[1] + (j + 1);
 							buildSingleButton();
 						}
 					}
 					if(i !== rank - 1){						
 						j = 0;
 						controlRotate = db[face]['rowStart'];
-						controlFloors = controlRotate[1] + i + controlRotate[1] + (i + 1);
+						controlFloors = controlRotate[1] + i + ' ' + controlRotate[1] + (i + 1);
 						buttonClass = 'smallLeft';
 						buildSingleButton();
 						j = rank - 1;
 						controlRotate = db[face]['rowEnd'];
-						controlFloors = controlRotate[1] + i + controlRotate[1] + (i + 1);
+						controlFloors = controlRotate[1] + i + ' ' + controlRotate[1] + (i + 1);
 						buttonClass = 'smallRight';
 						buildSingleButton();
 					}
@@ -248,18 +248,18 @@
 							buttonClass = 'bigBottom'
 						);						
 						for(j = 1; j < rank - 1; j++){
-							controlFloors = controlRotate[1] + (j - 1) + controlRotate[1] + j + controlRotate[1] + (j + 1);
+							controlFloors = controlRotate[1] + (j - 1) + ' ' + controlRotate[1] + j + ' ' + controlRotate[1] + (j + 1);
 							buildSingleButton();
 						}
 					}
 					j = 1;
 					controlRotate = db[face]['rowStart'];
-					controlFloors = controlRotate[1] + (i - 1) + controlRotate[1] + i + controlRotate[1] + (i + 1);
+					controlFloors = controlRotate[1] + (i - 1) + ' ' + controlRotate[1] + i + ' ' + controlRotate[1] + (i + 1);
 					buttonClass = 'bigLeft';
 					buildSingleButton();
 					j = rank - 2;
 					controlRotate = db[face]['rowEnd'];
-					controlFloors = controlRotate[1] + (i - 1) + controlRotate[1] + i + controlRotate[1] + (i + 1);
+					controlFloors = controlRotate[1] + (i - 1) + ' ' + controlRotate[1] + i + ' ' + controlRotate[1] + (i + 1);
 					buttonClass = 'bigRight';
 					buildSingleButton();
 				}
@@ -287,7 +287,7 @@
 	//执行该函数，玩家将可以控制旋转整个魔方
 		var cubeCon = document.getElementById('cubeContainer'),
 			cube = document.getElementById('cube');
-		cube.style.transform = 'scale(' + cubeParameters.scale + ') perspective(1500px) rotateX(-25deg) rotateY(-32deg) rotateZ(0deg)';
+		cube.style.transform = 'scale(' + cubeParameters.scale + ') perspective(' + cubeParameters.perspective + ') rotateX(-25deg) rotateY(-32deg) rotateZ(0deg)';
 		var handlerMove;
 		var handlerMoveF = function(originX, originY){
 			var flag = 1,
@@ -349,11 +349,209 @@
 	var initializeCubeParameter = function(rank){///////////////需要改，要求自己获得rank值
 		cubeParameters.rank = rank;
 		cubeParameters.scale = (0.7 + Math.log10(rank)) * 2 / rank;
+		cubeParameters.perspective = rank * 500 + 'px';
+	};
+	var playInitialize = function(){
+		var buttons = document.querySelectorAll('#cube>[buttonClass]'),
+			i = 0;
+		for(i = 0; i < buttons.length; i++){
+			buttons[i].addEventListener('click', handler, false);
+		}
+		function selectCells(floors){
+		//floors字符串。例：'X0 X1'
+		//选择将要被旋转的surfaceCells & floorsCells
+			var face = '',
+				axis = floors[0],
+				rank = cubeParameters.rank,
+				i = 0;
+			var surface_floorsCells = {
+					surfaceCells: [],
+					floorsCells: []
+			};
+			floors = floors.split(' ');
+			if(floors[0][1] === '0'){
+				switch(axis){
+					case 'X':
+						face = 'left';
+						break;
+					case 'Y':
+						face = 'top';
+						break;
+					case 'Z':
+						face: 'back';
+						break;
+				}
+			}else if(floors[floors.length - 1][1] === rank - 1 + ''){
+				switch(axis){
+					case 'X':
+						face = 'right';
+						break;
+					case 'Y':
+						face = 'bottom';
+						break;
+					case 'Z':
+						face: 'front';
+						break;
+				}
+			}
+			if(face){
+				surface_floorsCells.surfaceCells = [].slice.apply( document.querySelectorAll('#cube>[surface = ' + face + ']') );
+			}
+			for(i = 0; i < floors.length; i++){
+				surface_floorsCells.floorsCells =  [].slice.apply( document.querySelectorAll('#cube>[floor *= \"' + floors[i] + '\"]') );
+			}
+			return surface_floorsCells;
+		}
+		var rotateCells = (function(){
+			var rotateOne = (function(){
+			//rotateOne(clockwise, axis, elem)
+			//仅旋转一个元素，并没有更新此元素的相关attribute
+				var duration = 400,
+					steps = Math.floor( duration / 10 ),
+					stepTime = duration / steps,
+					stepPercent = 1 / steps;
+				var yFromXCubicBezier = function( xTarget ){
+					var tolerance = 0.00001,
+						t0 = 0.6,
+						x = 3*(1-t0)*(1-t0)*t0*0.5 + 3*(1-t0)*t0*t0*0.5 + t0*t0*t0,
+						t;
+					while( Math.abs(x - xTarget) > tolerance ){
+						t = t0 - ( 3*(1-t0)*(1-t0)*t0*0.5 + 3*(1-t0)*t0*t0*0.5 + t0*t0*t0 - xTarget ) / ( 3*(1 - t0)*(1 - t0)*0.5 + 6*(1 - t0)*t0*(0.5 - 0.5) + 3*t0*t0*(1 - 0.5) );
+						t0 = t;
+						x = 3*(1-t0)*(1-t0)*t0*0.5 + 3*(1-t0)*t0*t0*0.5 + t0*t0*t0;
+					}
+					return 3*(1-t)*t*t*1 + t*t*t;	
+				};
+				return function(clockwise, axis, elem){
+					var rent = elem.style,
+						rotatePreStr = 'rotate' + axis + '(',
+						rotateOrigin,
+						styleStrSuf,
+						t = 0;
+					rent.transform[6] === axis 
+						? (
+							rotateOrigin = +rent.transform.match(/[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/)[0],
+							styleStrSuf = 'deg)' + rent.transform.substring( rent.transform.search(' ') )
+						)
+						: (
+							rotateOrigin = 0,
+							styleStrSuf = 'deg) ' + rent.transform
+						);
+					t += stepPercent;
+					var tick;
+					if(clockwise === '-'){
+						tick = setInterval(function(){
+							t += stepPercent;
+							rent.transform = rotatePreStr + ( -yFromXCubicBezier(t)*90 + rotateOrigin ) + styleStrSuf;
+							t > 1 && (rent.transform = rotatePreStr + ( -90 + rotateOrigin ) + styleStrSuf) && clearInterval(tick);
+						}, stepTime);
+					} else{
+						tick = setInterval(function(){
+							t += stepPercent;
+							rent.transform = rotatePreStr + ( yFromXCubicBezier(t)*90 + rotateOrigin ) + styleStrSuf;
+							t > 1 && (rent.transform = rotatePreStr + ( 90 + rotateOrigin ) + styleStrSuf) && clearInterval(tick);
+						}, stepTime);
+					}
+				};
+			}());
+			var updateAttributeOfCells = (function(){
+				var rank = cubeParameters.rank,
+					rotateOrigin = (rank - 1) / 2;//这里的rotateOrigin是指旋转的坐标原点
+				var db = {
+				//“数据库”
+					'+X': {
+						'top': 'back',
+						'back': 'bottom',
+						'bottom': 'front',
+						'front': 'top'
+					},
+					'-X': {
+						'back': 'top',
+						'bottom': 'back',
+						'front': 'bottom',
+						'top': 'front'
+					},
+					'+Y': {
+						'front': 'right',
+						'right': 'back',
+						'back': 'left',
+						'left': 'front'
+					},
+					'-Y': {
+						'right': 'front',
+						'back': 'right',
+						'left': 'back',
+						'front': 'left'
+					},
+					'+Z': {
+						'top': 'right',
+						'right': 'bottom',
+						'bottom': 'left',
+						'left': 'top'
+					},
+					'-Z': {
+						'right': 'top',
+						'bottom': 'right',
+						'left': 'bottom',
+						'top': 'left'
+					}
+				};
+				return function(clockwise, axis, surfaceCells, floorsCells){
+				//surfaceCells floorsCells，数组或类数组。将要更新attribute的surfaceCells & floorsCells
+					var surfaceCellsAttrFloor = '',
+						floorsCellsAttrFloor = '',
+						floorsCellsAttrSurface = '',
+						i = 0,
+						a = 0,//a/b,aAxis/bAxis用于更新surfaceCells的attribute(floor)
+						b = 0,
+						aAxis = '',
+						bAxis = '';
+					//更新surfaceCells的attribute(floor)
+					for(i = 0; i < surfaceCells.length; i++){
+						surfaceCellsAttrFloor = surfaceCells[i].getAttribute('floor');
+						aAxis = surfaceCellsAttrFloor[0];
+						a = surfaceCellsAttrFloor[1];
+						bAxis = surfaceCellsAttrFloor[2];
+						b = surfaceCellsAttrFloor[3];
+						a = a - b;
+						b = a + b;
+						a = b - a;
+						a = -a;
+						surfaceCellsAttrFloor = aAxis + a + bAxis + b;
+						surfaceCells[i].setAttribute( surfaceCellsAttrFloor );
+					}
+					//更新floorsCells的attribute(floor & surface)
+					for(i = 0; i < floorsCells.length; i++){
+						floorsCellsAttrFloor = floorsCells[i].getAttribute('floor');
+					}
+				};
+			}());
+			return function(rotate, surfaceCells, floorsCells){
+			//rotate,字符串。标明旋转轴和旋转方向。例如：'+X'
+			//surfaceCells, floorsCells.数组或类数组。将要被旋转的surfaceCells & floorsCells
+				var clockwise = rotate[0],
+					axis = rotate[1],
+					i = 0;
+				for(i = 0; i < surfaceCells.length; i++){
+					rotateOne(clockwise, axis, surfaceCells[i]);
+				}
+				for(i = 0; i < floorsCells.length; i++){
+					rotateOne(clockwise, axis, floorsCells[i]);
+				}
+				updateAttributeOfCells(clockwise, axis, surfaceCells, floorsCells);
+			};
+		}());
+		function handler(event){
+			var cells = {};
+			cells = selectCells( this.getAttribute('controlFloors') );
+			rotateCells(this.getAttribute('controlRotate'), cells.surfaceCells, cells.floorsCells);
+		}
 	};
 	document.addEventListener('DOMContentLoaded', function(){
-		initializeCubeParameter(7);
+		initializeCubeParameter(3);
 		document.getElementById('cube').appendChild( buildCubeFragment() );
-		playerRotateCubeIni();
+		playerRotateCubeIni();//playerRotateCubeIni()和playerScaleCubeIni()执行顺序不能颠倒，如果有必要，请修改内部实现
 		playerScaleCubeIni();
+		//playInitialize();
 	}, false);
 }());
