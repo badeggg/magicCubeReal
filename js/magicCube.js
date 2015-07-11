@@ -639,10 +639,10 @@
 						surfaceCellsAttrFloor = surfaceCells[i].getAttribute('floor');
 						rent = regexpXZYPnum.exec( surfaceCellsAttrFloor );
 						aAxis = rent[1];
-						a = rent[2];
+						a = +rent[2];
 						rent = regexpXZYPnum.exec( surfaceCellsAttrFloor );
 						bAxis = rent[1];
-						b = rent[2];
+						b = +rent[2];
 						regexpXZYPnum.lastIndex = 0;
 						if(aAxis !== 'X' && bAxis !== 'Y'){
 							rent = aAxis;
