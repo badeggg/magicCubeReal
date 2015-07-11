@@ -59,14 +59,12 @@ main{
 	background: #89a;
 }
 #cube>[buttonClass ^= big]{
-	background-color: black;
 	position: absolute;
 }
 #cube>[buttonClass ^= big]:hover{
 	background-color: grey;
 }
 #cube>[buttonClass ^= small]{
-	background-color: rgb(239, 69, 140);
 	position: absolute;
 }
 #cube>[buttonClass ^= small]:hover{

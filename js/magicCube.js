@@ -124,8 +124,8 @@
 				back: {
 					columnStart: '-X',
 					columnEnd: '+X',
-					rowStart: '-Y',
-					rowEnd: '+Y'
+					rowStart: '+Y',
+					rowEnd: '-Y'
 				},
 				right: {
 					columnStart: '-Z',
@@ -378,7 +378,7 @@
 						face = 'top';
 						break;
 					case 'Z':
-						face: 'back';
+						face = 'back';
 						break;
 				}
 			}else if(floors[floors.length - 1][1] === rank - 1 + ''){
@@ -390,7 +390,7 @@
 						face = 'bottom';
 						break;
 					case 'Z':
-						face: 'front';
+						face = 'front';
 						break;
 				}
 			}
@@ -398,7 +398,7 @@
 				surface_floorsCells.surfaceCells = [].slice.apply( document.querySelectorAll('#cube>[surface = ' + face + ']') );
 			}
 			for(i = 0; i < floors.length; i++){
-				surface_floorsCells.floorsCells =  [].slice.apply( document.querySelectorAll('#cube>[floor *= \"' + floors[i] + '\"]') );
+				surface_floorsCells.floorsCells =  surface_floorsCells.floorsCells.concat( [].slice.apply( document.querySelectorAll('#cube>[floor *= \"' + floors[i] + '\"]') ) );
 			}
 			return surface_floorsCells;
 		}
@@ -456,73 +456,231 @@
 			}());
 			var updateAttributeOfCells = (function(){
 				var rank = cubeParameters.rank,
-					rotateOrigin = (rank - 1) / 2;//这里的rotateOrigin是指旋转的坐标原点
+					rotateOrigin = (rank - 1) / 2,//这里的rotateOrigin是指旋转的坐标原点
+					pnum = (/[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/).source,
+					regexpXZYPnum = new RegExp('([XZY])(' + pnum + ')', 'gi');
 				var db = {
 				//“数据库”
 					'+X': {
-						'top': 'back',
-						'back': 'bottom',
-						'bottom': 'front',
-						'front': 'top'
+						'top': {
+							next: 'back',
+							axisFrom: 'Z',
+							axisTo: 'Y',
+							axisReverse: true
+						},
+						'back': {
+							next: 'bottom',
+							axisFrom: 'Y',
+							axisTo: 'Z',
+							axisReverse: false
+						},
+						'bottom': {
+							next: 'front',
+							axisFrom: 'Z',
+							axisTo: 'Y',
+							axisReverse: true
+						},
+						'front': {
+							next: 'top',
+							axisFrom: 'Y',
+							axisTo: 'Z',
+							axisReverse: false
+						}
 					},
 					'-X': {
-						'back': 'top',
-						'bottom': 'back',
-						'front': 'bottom',
-						'top': 'front'
+						'back': {
+							next: 'top',
+							axisFrom: 'Y',
+							axisTo: 'Z',
+							axisReverse: true
+						},
+						'bottom': {
+							next: 'back',
+							axisFrom: 'Z',
+							axisTo: 'Y',
+							axisReverse: false
+						},
+						'front': {
+							next: 'bottom',
+							axisFrom: 'Y',
+							axisTo: 'Z',
+							axisReverse: true
+						},
+						'top': {
+							next: 'front',
+							axisFrom: 'Z',
+							axisTo: 'Y',
+							axisReverse: false
+						}
 					},
 					'+Y': {
-						'front': 'right',
-						'right': 'back',
-						'back': 'left',
-						'left': 'front'
+						'front': {
+							next: 'right',
+							axisFrom: 'X',
+							axisTo: 'Z',
+							axisReverse: true
+						},
+						'right': {
+							next: 'back',
+							axisFrom: 'Z',
+							axisTo: 'X',
+							axisReverse: false
+						},
+						'back': {
+							next: 'left',
+							axisFrom: 'X',
+							axisTo: 'Z',
+							axisReverse: true
+						},
+						'left': {
+							next: 'front',
+							axisFrom: 'Z',
+							axisTo: 'X',
+							axisReverse: false
+						}
 					},
 					'-Y': {
-						'right': 'front',
-						'back': 'right',
-						'left': 'back',
-						'front': 'left'
+						'right': {
+							next: 'front',
+							axisFrom: 'Z',
+							axisTo: 'X',
+							axisReverse: true
+						},
+						'back': {
+							next: 'right',
+							axisFrom: 'X',
+							axisTo: 'Z',
+							axisReverse: false
+						},
+						'left': {
+							next: 'back',
+							axisFrom: 'Z',
+							axisTo: 'X',
+							axisReverse: true
+						},
+						'front': {
+							next: 'left',
+							axisFrom: 'X',
+							axisTo: 'Z',
+							axisReverse: false
+						}
 					},
 					'+Z': {
-						'top': 'right',
-						'right': 'bottom',
-						'bottom': 'left',
-						'left': 'top'
+						'top': {
+							next: 'right',
+							axisFrom: 'X',
+							axisTo: 'Y',
+							axisReverse: false
+						},
+						'right': {
+							next: 'bottom',
+							axisFrom: 'Y',
+							axisTo: 'X',
+							axisReverse: true
+						},
+						'bottom': {
+							next: 'left',
+							axisFrom: 'X',
+							axisTo: 'Y',
+							axisReverse: false
+						},
+						'left': {
+							next: 'top',
+							axisFrom: 'Y',
+							axisTo: 'X',
+							axisReverse: true
+						}
 					},
 					'-Z': {
-						'right': 'top',
-						'bottom': 'right',
-						'left': 'bottom',
-						'top': 'left'
+						'right': {
+							next: 'top',
+							axisFrom: 'Y',
+							axisTo: 'X',
+							axisReverse: false
+						},
+						'bottom': {
+							next: 'right',
+							axisFrom: 'X',
+							axisTo: 'Y',
+							axisReverse: true
+						},
+						'left': {
+							next: 'bottom',
+							axisFrom: 'Y',
+							axisTo: 'X',
+							axisReverse: false
+						},
+						'top': {
+							next: 'left',
+							axisFrom: 'X',
+							axisTo: 'Y',
+							axisReverse: true
+						}
 					}
 				};
-				return function(clockwise, axis, surfaceCells, floorsCells){
+				return function(rotate, surfaceCells, floorsCells){
+				//rotate,字符串。标明旋转轴和旋转方向。例如：'+X'
 				//surfaceCells floorsCells，数组或类数组。将要更新attribute的surfaceCells & floorsCells
 					var surfaceCellsAttrFloor = '',
 						floorsCellsAttrFloor = '',
 						floorsCellsAttrSurface = '',
 						i = 0,
+						j = 0,
 						a = 0,//a/b,aAxis/bAxis用于更新surfaceCells的attribute(floor)
 						b = 0,
 						aAxis = '',
-						bAxis = '';
+						bAxis = '',
+						from = 'X',
+						to = 'X',
+						regexp,
+						rent;
 					//更新surfaceCells的attribute(floor)
 					for(i = 0; i < surfaceCells.length; i++){
 						surfaceCellsAttrFloor = surfaceCells[i].getAttribute('floor');
-						aAxis = surfaceCellsAttrFloor[0];
-						a = surfaceCellsAttrFloor[1];
-						bAxis = surfaceCellsAttrFloor[2];
-						b = surfaceCellsAttrFloor[3];
+						rent = regexpXZYPnum.exec( surfaceCellsAttrFloor );
+						aAxis = rent[1];
+						a = rent[2];
+						rent = regexpXZYPnum.exec( surfaceCellsAttrFloor );
+						bAxis = rent[1];
+						b = rent[2];
+						regexpXZYPnum.lastIndex = 0;
+						if(aAxis !== 'X' && bAxis !== 'Y'){
+							rent = aAxis;
+							aAxis = bAxis;
+							bAxis = rent;
+							a = a - b;
+							b = a + b;
+							a = b - a;
+						}
+						a = a - rotateOrigin;
+						b = b - rotateOrigin;
 						a = a - b;
 						b = a + b;
 						a = b - a;
-						a = -a;
+						rotate[0] === '-'
+						? rotate[1] !== 'Z' ? a = -a : b = -b
+						: rotate[1] !== 'Z' ? b = -b : a = -a;
+						a = a + rotateOrigin;
+						b = b + rotateOrigin;
 						surfaceCellsAttrFloor = aAxis + a + bAxis + b;
-						surfaceCells[i].setAttribute( surfaceCellsAttrFloor );
+						surfaceCells[i].setAttribute('floor', surfaceCellsAttrFloor );
 					}
 					//更新floorsCells的attribute(floor & surface)
 					for(i = 0; i < floorsCells.length; i++){
+						floorsCellsAttrSurface = floorsCells[i].getAttribute('surface');
+						floorsCells[i].setAttribute('surface', db[rotate][floorsCellsAttrSurface].next);
 						floorsCellsAttrFloor = floorsCells[i].getAttribute('floor');
+						from = db[rotate][floorsCellsAttrSurface].axisFrom;
+						to = db[rotate][floorsCellsAttrSurface].axisTo;
+						if( db[rotate][floorsCellsAttrSurface].axisReverse ){
+							regexp = new RegExp(from + '(' + pnum + ')', 'i');
+							rent = regexp.exec( floorsCellsAttrFloor )[1];
+							rent = rank - 1 - rent;
+							floorsCells[i].setAttribute('floor', floorsCellsAttrFloor.replace(regexp, to + rent));
+						} else{
+							floorsCells[i].setAttribute('floor', floorsCellsAttrFloor.replace(from, to));
+						}
+						//console.log(floorsCells[i].getAttribute('floor'));
 					}
 				};
 			}());
@@ -538,7 +696,7 @@
 				for(i = 0; i < floorsCells.length; i++){
 					rotateOne(clockwise, axis, floorsCells[i]);
 				}
-				updateAttributeOfCells(clockwise, axis, surfaceCells, floorsCells);
+				updateAttributeOfCells(rotate, surfaceCells, floorsCells);
 			};
 		}());
 		function handler(event){
@@ -548,10 +706,10 @@
 		}
 	};
 	document.addEventListener('DOMContentLoaded', function(){
-		initializeCubeParameter(3);
+		initializeCubeParameter(4);
 		document.getElementById('cube').appendChild( buildCubeFragment() );
 		playerRotateCubeIni();//playerRotateCubeIni()和playerScaleCubeIni()执行顺序不能颠倒，如果有必要，请修改内部实现
 		playerScaleCubeIni();
-		//playInitialize();
+		playInitialize();
 	}, false);
 }());
