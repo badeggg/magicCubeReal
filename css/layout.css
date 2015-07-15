@@ -1,0 +1,66 @@
+﻿/****2015/7/15 start**************/
+#setRank{
+	position: absolute;
+	z-index: 10;
+	right: 50%;
+	font-family: Gudea, Arial, sans-serif;
+	font-size: 25px;
+}
+#setRank>.Iwant{
+	word-spacing: 0.5em;
+	color: rgb(27, 45, 45);
+}
+#setRank>.set{
+	display: inline-block;
+	width: 40px;
+	cursor: pointer;
+	text-align: center;
+	border: none;
+}
+#setRank>.set>:nth-child(2n + 1){
+	height: 20px;
+	width: 40px;
+	margin: 0 auto;
+	background-image: url('../pic/allSmall.png');
+	background-origin: content-box;
+	background-clip: content-box;
+	opacity: 0;
+	transition: 0.25s opacity;
+}
+#setRank>.set>:first-child{
+	background-position: 3px -3px;
+	margin-top: 8px;
+	padding-bottom: 5px;
+}
+#setRank>.set>:first-child:hover{
+	opacity: 1;
+}
+#setRank>.set>:last-child{
+	background-position: 3px -43px;
+	padding-top: 8px;
+}
+#setRank>.set>:last-child:hover{
+	opacity: 1;
+}
+#setRank>.set>:nth-child(2){
+	height: 30px;
+	border-bottom: 2px solid;
+	transition: 0.2s border-bottom-color;
+}
+#setRank>.rejectText{
+	color: red;
+	font-family: Gudea, Arial, sans-serif;
+	font-size: 13px;
+	margin-left: 8px;
+	opacity: 0;
+}
+#setRank>.enter{
+	position: absolute;
+	left: 145px;
+	top: 0;
+	width: 80px;
+	height: 80px;
+	background-image: url('../pic/allSmall.png');
+	background-position: 3px 100px;
+	cursor: pointer;
+}

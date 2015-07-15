@@ -458,6 +458,8 @@
 		return function(){
 			var cube = document.createDocumentFragment();
 			cube.appendChild( buildSurfaces() );
+			if(cubeParameters.rank === 1)
+				return cube;
 			cube.appendChild( buildButtons() );
 			cube.appendChild( buildMasks() );
 			return cube;
@@ -526,7 +528,7 @@
 			regexp.lastIndex = 0;
 		};
 	};
-	var initializeCubeParameter = function(rank){///////////////需要改，要求自己获得rank值
+	var initializeCubeParameter = function(rank){
 		cubeParameters.rank = rank;
 		cubeParameters.scale = (0.7 + Math.log10(rank)) * 2 / rank;
 		cubeParameters.perspective = rank * 500 + 'px';
@@ -782,11 +784,74 @@
 			rotateCells(this.getAttribute('controlRotate'), this.getAttribute('controlFloors'), cells.surfaceCells, cells.floorsCells);
 		}
 	};
-	document.addEventListener('DOMContentLoaded', function(){
-		initializeCubeParameter(7);
-		document.getElementById('cube').appendChild( buildCubeFragment() );
+	function initializeAllThings(rank){
+		initializeCubeParameter(rank);
+		var oldCube = document.getElementById('cube');
+		var newCube = document.createElement('div');
+		newCube.id = 'cube';
+		newCube.appendChild( buildCubeFragment() );
+		oldCube.parentNode.replaceChild(newCube, oldCube);
 		playerRotateCubeIni();//playerRotateCubeIni()和playerScaleCubeIni()执行顺序不能颠倒，如果有必要，请修改内部实现
 		playerScaleCubeIni();
+		if(rank === 1)
+			return;
 		playInitialize();
+	};
+	window.cube = {};
+	window.cube.initialize = initializeAllThings;
+	window.cube.parameters = cubeParameters;
+}());
+/********************************************分割线，以上是魔方核心代码，以下是其他***********************************************/
+(function(){
+//玩家点击页面中'上'/'下'时，增加/减少魔方阶数。（仅更改数值，并不负责重新设置魔方）
+	var rankSource = document.querySelector('#setRank>.set>:nth-child(2)'),
+		up = document.querySelector('#setRank>.set>:first-child'),
+		down = document.querySelector('#setRank>.set>:last-child'),
+		reject = document.querySelector('#setRank>.rejectText'),
+		enter = document.querySelector('#setRank>.enter');
+	up.addEventListener('click', function(){
+		if(+rankSource.textContent < 12){
+			rankSource.textContent = +rankSource.textContent + 1 + '';			
+		} else{
+			reject.style.opacity = '1';
+			setTimeout(function(){
+				reject.style.transition = '1.6s opacity';
+				reject.style.opacity = '0';
+			},1600);
+		}
+	}, false);
+	down.addEventListener('click', function(){
+		if(+rankSource.textContent > 1){
+			rankSource.textContent = +rankSource.textContent - 1 + '';
+		} else{
+			reject.style.opacity = '1';
+			setTimeout(function(){
+				reject.style.transition = '1.6s opacity';
+				reject.style.opacity = '0';
+			},1600);
+		}
+	}, false);
+	down.addEventListener('mouseenter', function(){
+		rankSource.style.borderBottom = '2px solid rgba(0,0,0,0)';
+	}, false);
+	down.addEventListener('mouseleave', function(){
+		rankSource.style.borderBottom = '2px solid';
+	}, false);
+	enter.addEventListener('mousedown', function(){
+		enter.style.backgroundPosition = '4px 102px';
+	}, false);
+	enter.addEventListener('mouseup', function(){
+		enter.style.backgroundPosition = '3px 100px';
+	}, false);
+	enter.addEventListener('click', function(){
+		var rank = +rankSource.textContent;
+		rank = Math.floor(rank);
+		if(rank === cube.parameters.rank || rank > 12 || rank < 1){
+			return;
+		}
+		cube.initialize( rank );
+	}, false);
+	document.addEventListener('DOMContentLoaded', function(){
+		cube.initialize( +rankSource.textContent );
 	}, false);
 }());

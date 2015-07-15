@@ -1,0 +1,9 @@
+﻿@font-face{
+  font-family: 'Gudea';
+  font-weight: normal;
+  src: url('gudea-regular-webfont.eot');
+  src: url('gudea-regular-webfont.eot?#iefix') format('embedded-opentype'),
+     url('gudea-regular-webfont.woff') format('woff'),
+     url('gudea-regular-webfont.ttf') format('truetype'),
+     url('gudea-regular-webfont.svg') format('svg');
+}
