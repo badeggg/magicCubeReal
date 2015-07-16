@@ -808,34 +808,33 @@
 		up = document.querySelector('#setRank>.set>:first-child'),
 		down = document.querySelector('#setRank>.set>:last-child'),
 		reject = document.querySelector('#setRank>.rejectText'),
-		enter = document.querySelector('#setRank>.enter');
+		enter = document.querySelector('#setRank>.enterCon>.enter');
 	up.addEventListener('click', function(){
-		if(+rankSource.textContent < 12){
-			rankSource.textContent = +rankSource.textContent + 1 + '';			
-		} else{
-			reject.style.opacity = '1';
-			setTimeout(function(){
-				reject.style.transition = '1.6s opacity';
-				reject.style.opacity = '0';
-			},1600);
-		}
+		var num = +rankSource.textContent + 1 + '';
+		num.length < 3 && (rankSource.textContent = num);
+		rankSource.dispatchEvent(new Event('input'));
 	}, false);
 	down.addEventListener('click', function(){
-		if(+rankSource.textContent > 1){
-			rankSource.textContent = +rankSource.textContent - 1 + '';
-		} else{
-			reject.style.opacity = '1';
-			setTimeout(function(){
-				reject.style.transition = '1.6s opacity';
-				reject.style.opacity = '0';
-			},1600);
-		}
+		var num = +rankSource.textContent - 1 + '';
+		num.length < 3 && (rankSource.textContent = num);
+		rankSource.dispatchEvent(new Event('input'));
 	}, false);
 	down.addEventListener('mouseenter', function(){
 		rankSource.style.borderBottom = '2px solid rgba(0,0,0,0)';
 	}, false);
 	down.addEventListener('mouseleave', function(){
 		rankSource.style.borderBottom = '2px solid';
+	}, false);
+	rankSource.addEventListener('keydown', function(event){
+		if(event.keyCode >= 48 && event.keyCode <= 57 && this.textContent.length < 2 || event.keyCode === 8 || event.keyCode === 46 || event.keyCode === 37 || event.keyCode === 39){
+			return;
+		}
+		event.preventDefault();
+	}, false);
+	rankSource.addEventListener('input', function(){
+		(+rankSource.textContent > 10 || +rankSource.textContent < 1)
+		? showReject()
+		: cancelReject();
 	}, false);
 	enter.addEventListener('mousedown', function(){
 		enter.style.backgroundPosition = '4px 102px';
@@ -844,14 +843,19 @@
 		enter.style.backgroundPosition = '3px 100px';
 	}, false);
 	enter.addEventListener('click', function(){
-		var rank = +rankSource.textContent;
-		rank = Math.floor(rank);
-		if(rank === cube.parameters.rank || rank > 12 || rank < 1){
-			return;
-		}
-		cube.initialize( rank );
+		cube.initialize( +rankSource.textContent );
 	}, false);
 	document.addEventListener('DOMContentLoaded', function(){
 		cube.initialize( +rankSource.textContent );
 	}, false);
+	function showReject(){
+		enter.style.display !== 'none' && (enter.style.display = 'none');
+		reject.style.transition !== '1.5s opacity' && (reject.style.transition = '1.5s opacity');
+		reject.style.opacity !== '0.7' && (reject.style.opacity = '0.7');
+	}
+	function cancelReject(){
+		enter.style.display !== 'block' && (enter.style.display = 'block');
+		reject.style.transition !== '' && (reject.style.transition = '');
+		reject.style.opacity !== '0' && (reject.style.opacity = '0');
+	}
 }());
