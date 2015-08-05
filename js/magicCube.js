@@ -278,7 +278,7 @@
 					cell = document.createElement('div');
 					cell.setAttribute('color', color);
 					cell.setAttribute('surface', face);
-					cell.setAttribute( 'floor', row + (i % rank) + column + (Math.floor(i / rank)) );
+					cell.setAttribute( 'floor', row + (i % rank) + ' ' + column + (Math.floor(i / rank)) + ' ' );
 					//形成多个cell组成的一个面
 					cell.style.transform = 'translate(' + (i % rank + 0.5 - center) * 100 + '%,' + (Math.floor(i / rank) + 0.5 - center) *100 + '%)';
 					//把surface部署到合适的位置
@@ -534,6 +534,7 @@
 		cubeParameters.perspective = rank * 500 + 'px';
 	};
 	var playInitialize = function(){
+	//执行此函数，玩家将可以玩儿
 		var buttons = document.querySelectorAll('#cube>[buttonClass]'),
 			i = 0;
 		for(i = 0; i < buttons.length; i++){
@@ -551,7 +552,7 @@
 					floorsCells: []
 			};
 			floors = floors.split(' ');
-			if(floors[0][1] === '0'){
+			if(floors[0].slice(1) === '0'){
 				switch(axis){
 					case 'X':
 						face = 'left';
@@ -563,7 +564,7 @@
 						face = 'back';
 						break;
 				}
-			}else if(floors[floors.length - 1][1] === rank - 1 + ''){
+			}else if(floors[floors.length - 1].slice(1) === rank - 1 + ''){
 				switch(axis){
 					case 'X':
 						face = 'right';
@@ -580,7 +581,7 @@
 				surface_floorsCells.surfaceCells = [].slice.apply( document.querySelectorAll('#cube>[surface = ' + face + ']') );
 			}
 			for(i = 0; i < floors.length; i++){
-				surface_floorsCells.floorsCells =  surface_floorsCells.floorsCells.concat( [].slice.apply( document.querySelectorAll('#cube>[floor *= \"' + floors[i] + '\"]') ) );
+				surface_floorsCells.floorsCells =  surface_floorsCells.floorsCells.concat( [].slice.apply( document.querySelectorAll('#cube>[floor *= \"' + floors[i] + ' \"]') ) );
 			}
 			return surface_floorsCells;
 		}
@@ -686,7 +687,7 @@
 						: rotate[1] !== 'Z' ? b = -b : a = -a;
 						a = a + rotateOrigin;
 						b = b + rotateOrigin;
-						surfaceCellsAttrFloor = aAxis + a + bAxis + b;
+						surfaceCellsAttrFloor = aAxis + a + ' ' + bAxis + b + ' ';
 						surfaceCells[i].setAttribute('floor', surfaceCellsAttrFloor );
 					}
 					//更新floorsCells的attribute(floor & surface)
@@ -730,8 +731,8 @@
 						break;
 				}
 				floors = floors.split(' ');
-				cut.push( floors[0][1] );
-				cut.push( +floors[floors.length - 1][1] + 1 + '');
+				cut.push( floors[0].slice(1) );
+				cut.push( +floors[floors.length - 1].slice(1) + 1 + '');
 				//此循环最多只执行两次，逻辑却复杂晦涩。真是失败的设计
 				for(i = 0; i < cut.length; i++){
 					if(+cut[i] === 0 || +cut[i] === rank){
@@ -826,7 +827,7 @@
 		rankSource.style.borderBottom = '2px solid';
 	}, false);
 	rankSource.addEventListener('keydown', function(event){
-		if(event.keyCode >= 48 && event.keyCode <= 57 && this.textContent.length < 2 || event.keyCode === 8 || event.keyCode === 46 || event.keyCode === 37 || event.keyCode === 39){
+		if(event.keyCode >= 48 && event.keyCode <= 57 && (this.textContent.length < 2 || rankSource.selectStatus) || event.keyCode === 8 || event.keyCode === 46 || event.keyCode === 37 || event.keyCode === 39){
 			return;
 		}
 		event.preventDefault();
@@ -837,10 +838,10 @@
 		: cancelReject();
 	}, false);
 	enter.addEventListener('mousedown', function(){
-		enter.style.backgroundPosition = '4px 102px';
+		enter.style.backgroundPosition = '4px -155px';
 	}, false);
 	enter.addEventListener('mouseup', function(){
-		enter.style.backgroundPosition = '3px 100px';
+		enter.style.backgroundPosition = '3px -156px';
 	}, false);
 	enter.addEventListener('click', function(){
 		cube.initialize( +rankSource.textContent );
