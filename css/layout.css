@@ -1,4 +1,5 @@
 ﻿/****2015/7/15 start**************/
+/*以下一节是玩家输入魔方阶数的样式*/
 #setRank{
 	position: absolute;
 	z-index: 10;
@@ -68,3 +69,63 @@
 	background-position: 3px -156px;
 	cursor: pointer;
 }
+/*以上一节是玩家输入魔方阶数的样式*/
+
+/*以下一节是登录/注册的样式*/
+aside{
+	position: fixed;
+	left: 0;
+	top: 0;
+	font-size: 0;
+	border-right: 3px solid pink;
+	border-bottom: 3px solid pink;
+	border-bottom-right-radius: 10px;
+}
+aside :nth-child(-n + 3){
+	font-size: 1.5rem;
+	display: inline-block;
+	width: 150px;
+	height: 40px;
+	font-family: Gudea, Arial, sans-serif;
+	text-align: center;
+	padding-top: 6px;
+	box-sizing: border-box;
+	vertical-align: bottom;
+}
+aside>.stick{
+	width: 3px;
+	background-color: pink;
+	display: none;
+}
+aside>.signInLable{
+	background-color: rgba(223, 239, 255, 1);
+	border-bottom-right-radius: 8px;
+}
+aside>.signUpLable{
+	background-color: rgba(188, 253, 188, 1);
+	display: none;
+}
+aside>.signInLable:hover{
+	cursor: pointer;
+	background-color: rgba(223, 239, 255, 0.69)
+}
+aside>.signUpLable:hover{
+	cursor: pointer;
+	background-color: rgba(188, 253, 188, 0.69)
+}
+aside>.signIn, aside>.signUp{
+	width: 100%;
+	height: 217px;
+	display: none;
+	border-bottom-right-radius: 10px;
+}
+aside>.signIn{
+	background-color: rgba(223, 239, 255, 1);
+}
+aside>.signUp{
+	background-color: rgba(188, 253, 188, 1);
+}
+/*以上一节是登录/注册的样式*/
+
+
+
