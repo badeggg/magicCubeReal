@@ -77,11 +77,11 @@ aside{
 	left: 0;
 	top: 0;
 	font-size: 0;
-	border-right: 3px solid pink;
-	border-bottom: 3px solid pink;
-	border-bottom-right-radius: 10px;
+	border-right: 3px solid #FFF;
+	border-bottom: 3px solid #FFF;
+	z-index: 20;
 }
-aside :nth-child(-n + 3){
+aside>:nth-child(-n + 3){
 	font-size: 1.5rem;
 	display: inline-block;
 	width: 150px;
@@ -93,17 +93,19 @@ aside :nth-child(-n + 3){
 	vertical-align: bottom;
 }
 aside>.stick{
-	width: 3px;
-	background-color: pink;
+	width: 2px;
+	background-color: white;
 	display: none;
 }
 aside>.signInLable{
 	background-color: rgba(223, 239, 255, 1);
-	border-bottom-right-radius: 8px;
 }
 aside>.signUpLable{
 	background-color: rgba(188, 253, 188, 1);
-	display: none;
+	width: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	transition: width 0.22s;
 }
 aside>.signInLable:hover{
 	cursor: pointer;
@@ -117,13 +119,101 @@ aside>.signIn, aside>.signUp{
 	width: 100%;
 	height: 217px;
 	display: none;
-	border-bottom-right-radius: 10px;
 }
 aside>.signIn{
 	background-color: rgba(223, 239, 255, 1);
 }
 aside>.signUp{
 	background-color: rgba(188, 253, 188, 1);
+}
+aside>.close{
+	position: absolute;
+	background: #D26363;
+	height: 20px;
+	width: 20px;
+	top: 0px;
+	right: -24px;
+	opacity: 0.7;
+	cursor: pointer;
+	display: none;
+}
+aside>.close:hover{
+	opacity: 1;
+}
+aside>.close>span{
+	background-color: white;
+	width: 20px;
+	height: 2px;
+	display: block;
+	position: absolute;
+	top: 8px;
+}
+aside>.close>span:first-child{
+	transform: rotate(45deg);
+}
+aside>.close>span:last-child{
+	transform: rotate(-45deg);
+}
+#shade{
+	position: fixed;
+	z-index: 10;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.9);
+	display: none;
+}
+#signInForm{
+	width: 200px;
+	margin: 0px auto;
+	padding-top:45px;
+	font-size: 1rem;
+}
+#signInForm>input:nth-child(-n+2){
+	box-sizing: border-box;
+	width: 100%;
+}
+#signInForm>input:first-child{
+	margin-bottom: 20px;
+}
+#signInForm>span{
+	display: inline-flex;
+	justify-content: space-between;
+	width: 100%;
+}
+#signInForm>span>a{
+	color: blue;
+	font-family: Gudea, Arial, sans-serif;
+	cursor: pointer;
+	height: 1.3em;
+	margin-top: 3px;
+}
+#signInForm>span>a:hover{
+	color: #0202AF;
+	text-decoration: underline;
+}
+#signInForm>span>input[type="submit"]{
+	height: 28px;
+	margin-top: 9px;
+	cursor: pointer;
+}
+#signUpForm{
+	width: 200px;
+	margin: 0px auto;
+	padding-top: 45px;
+	font-size: 1rem;
+}
+#signUpForm>input:nth-child(-n+3){
+	width: 100%;
+	box-sizing: border-box;
+}
+#signUpForm>input[name="email"]{
+	margin: 12px 0px;
+}
+#signUpForm>input[type = 'submit']{
+	height: 28px;
+	margin-top: 9px;
+	float: right;
+	cursor: pointer;
 }
 /*以上一节是登录/注册的样式*/
 
