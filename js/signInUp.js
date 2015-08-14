@@ -8,7 +8,11 @@
 		signBox = document.getElementById('signBox'),
 		close = document.querySelector('.close'),
 		shade = document.querySelector('#shade'),
-		stick = document.querySelector('.stick');
+		stick = document.querySelector('.stick'),
+		submitButtons = document.querySelectorAll('input[type = "submit"]'),
+		signInForm = document.querySelector('#signInForm'),
+		signUpForm = document.querySelector('#signUpForm');
+	var i = 0;
 	signBox.addEventListener('mouseenter', handler1, false);
 	signBox.addEventListener('mouseleave', handler2, false);
 	signInLable.addEventListener('click', function(){
@@ -60,6 +64,23 @@
 		signUpLable.style.width = '0px';
 		stick.style.display = 'none';
 	};
+	for(i = 0; i < submitButtons.length; i++){
+		submitButtons[i].addEventListener('mousedown', function(){
+			var temp = this.style.backgroundImage;
+			this.style.backgroundImage = 'none';
+			this.addEventListener('mouseup', handl, false);
+			function handl(){
+				this.style.backgroundImage = temp;
+				this.removeEventListener('mouseup', handl, false);
+			}
+		}, false);
+	}
+	signInForm.addEventListener('submit', function(event){
+		event.preventDefault();
+	}, false);
+	signUpForm.addEventListener('submit', function(event){
+		event.preventDefault();
+	}, false);
 }());
 
 
