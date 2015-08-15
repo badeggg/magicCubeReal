@@ -1,6 +1,7 @@
 ﻿//2015/8/10 start
 //此文件负责玩家注册/登录
 (function(){
+//此代码块主要负责交互（不和服务器打交道的交互）
 	var signInLable = document.querySelector('.signInLable'),
 		signUpLable = document.querySelector('.signUpLable'),
 		signIn = document.querySelector('.signIn'),
@@ -9,10 +10,7 @@
 		close = document.querySelector('.close'),
 		shade = document.querySelector('#shade'),
 		stick = document.querySelector('.stick'),
-		submitButtons = document.querySelectorAll('input[type = "submit"]'),
-		signInForm = document.querySelector('#signInForm'),
-		signUpForm = document.querySelector('#signUpForm');
-	var i = 0;
+		submitButtons = document.querySelectorAll('input[type = "submit"]');
 	signBox.addEventListener('mouseenter', handler1, false);
 	signBox.addEventListener('mouseleave', handler2, false);
 	signInLable.addEventListener('click', function(){
@@ -75,8 +73,35 @@
 			}
 		}, false);
 	}
+}());
+
+(function(){
+//此代码块负责ajax
+	var signInForm = document.querySelector('#signInForm'),
+		signUpForm = document.querySelector('#signUpForm');
+		i = 0;
+	var player = {
+			status: 'signout',
+			name: ''
+	};
+	window.player = player;
 	signInForm.addEventListener('submit', function(event){
 		event.preventDefault();
+		var formData = new FormData(this),
+			xhr = new XMLHttpRequest();
+		xhr.open('POST', '/signIn');
+		xhr.send(formData);
+		xhr.onload = function(){
+			console.log(xhr.responseText);////////////////////////////////////////////////////////////////////////////////////////
+			var responseJSON = JSON.parse(xhr.responseText);
+			if(responseJSON.status === 'signin'){
+				player.status = 'signin';
+				player.name = responseJSON.name;
+				console.log(player);
+			} else{
+				console.log('wronge username or password');
+			}
+		};
 	}, false);
 	signUpForm.addEventListener('submit', function(event){
 		event.preventDefault();
