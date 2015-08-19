@@ -62,17 +62,6 @@
 		signUpLable.style.width = '0px';
 		stick.style.display = 'none';
 	};
-	for(i = 0; i < submitButtons.length; i++){
-		submitButtons[i].addEventListener('mousedown', function(){
-			var temp = this.style.backgroundImage;
-			this.style.backgroundImage = 'none';
-			this.addEventListener('mouseup', handl, false);
-			function handl(){
-				this.style.backgroundImage = temp;
-				this.removeEventListener('mouseup', handl, false);
-			}
-		}, false);
-	}
 }());
 
 (function(){
@@ -97,14 +86,14 @@
 			if(responseJSON.status === 'signin'){
 				player.status = 'signin';
 				player.name = responseJSON.name;
-				console.log(player);
 			} else{
-				console.log('wronge username or password');
+				document.querySelector('#signBox>.signIn>.warn').style.display = 'block';
 			}
 		};
 	}, false);
 	signUpForm.addEventListener('submit', function(event){
 		event.preventDefault();
+		console.log('Ok, you clicked the \'submit\' button. I got it.');
 	}, false);
 }());
 
