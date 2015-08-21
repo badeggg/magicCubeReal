@@ -260,6 +260,35 @@ input[type = 'submit']:hover{
 #signBox input[type = 'text']:focus, #signBox input[type = 'password']:focus{
 	border-right-width: 3px;
 }
+.remind{
+	position: absolute;
+	top: 19px;
+	display: none;
+}
+.remind>p{
+	background-color: #C71717;
+	font-size: 0.9em;
+	margin: 0;
+	margin-bottom: 8px;
+	padding: 0 4px;
+	line-height: 1.5em;
+	border-radius: 4px;
+	color: white;
+}
+.remind>i{
+	display: block;
+	width: 0;
+	height: 0;
+	border-top: 11px solid #C71717;
+	border-left: 4px solid rgba(0,0,0,0);
+	border-right: 11px solid rgba(0,0,0,0);
+	position: absolute;
+	bottom: -3px;
+	left: 12px;
+}
+#signBox form{
+	position: relative;
+}
 /*以上一节是登录/注册的样式*/
 
 
