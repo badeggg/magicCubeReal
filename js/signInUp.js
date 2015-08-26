@@ -74,7 +74,7 @@
 			remindEle = formEle.querySelector('.remind'),
 			remindTextEle = remindEle.querySelector('p').firstChild;
 		submitEle.addEventListener('click', function(event){
-			event.preventDefault();
+			event.preventDefault();//不使用form原生的submit事件
 			if(usernameEle.value === ''){
 				remindTextEle.nodeValue = 'We need your username/email.';
 				remindEle.style.top = '19px';
@@ -114,98 +114,174 @@
 			submitEle = formEle.querySelector('input[type="submit"]'),
 			remindEle = formEle.querySelector('.remind'),
 			remindTextEle = remindEle.querySelector('p').firstChild;
-		var handler1 = (function(){
+		var validate1 = (function(){
 		//验证username
-			var reg = /^[\u4E00-\u9FA5\w]{1,30}$/;
-			return function(){
-				if(this.value === ''){
+			var reg = /^[\u4E00-\u9FA5\w]{1,40}$/;
+			return function(callback){
+				if(usernameEle.value === ''){
+					remindTextEle.nodeValue = 'Username can\'t be blank.';
+					remindEle.style.top = '19px';
+					remindEle.style.display = 'block';
+					remindEle.for = 'username';
+					remindEle.cause = 'blank';
 					return;
+				} else if(remindEle.for === 'username' && remindEle.cause === 'blank'){
+					remindEle.style.display = 'none';
 				}
-				if(this.value.length > 30){
-					remindTextEle.nodeValue = 'Username is too long (maximum is 30 characters).';
+				if(usernameEle.value.length > 40){
+					remindTextEle.nodeValue = 'Username is too long (maximum is 40 characters).';
 					remindEle.style.top = '-2px';
 					remindEle.style.display = 'block';
 					remindEle.for = 'username';
 					remindEle.cause = 'tooLong';
 					return;
-				} else if(remindEle.cause === 'tooLong'){
+				} else if(remindEle.for === 'username' && remindEle.cause === 'tooLong'){
 					remindEle.style.display = 'none';
 				}
-				if( !reg.test(this.value) ){
+				if( !reg.test(usernameEle.value) ){
 					remindTextEle.nodeValue = 'Only alphanumeric and chinese characters and underscore are allowed.';
 					remindEle.style.top = '-23px';
 					remindEle.style.display = 'block';
 					remindEle.for = 'username';
 					remindEle.cause = 'specialChar';
 					return;
-				} else if(remindEle.cause === 'specialChar'){
+				} else if(remindEle.for === 'username' && remindEle.cause === 'specialChar'){
 					remindEle.style.display = 'none';
 				}
-				console.log('这里将进行用户名验重');//////////////////////////////////////////////////////
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST', '/checkUsername');
+				xhr.send( JSON.stringify( {username: usernameEle.value} ) );
+				xhr.onload = function(){
+					if( !JSON.parse( xhr.responseText ).result ){
+						remindTextEle.nodeValue = 'Username is already taken.';
+						remindEle.style.top = '19px';
+						remindEle.style.display = 'block';
+						remindEle.for = 'username';
+						remindEle.cause = 'taken';
+						return;
+					} else{
+						if(remindEle.for === 'username' && remindEle.cause === 'taken'){
+							remindEle.style.display = 'none';
+						}
+						callback && callback();
+					}
+				};
 			};
 		}());
-		usernameEle.oninput = handler1;
-		usernameEle.onfocus = handler1;
+		usernameEle.oninput = (function(){
+			var timer;
+			return function(){
+				clearTimeout(timer);
+				timer = setTimeout(validate1, 500);
+			};
+		}());
 		usernameEle.onblur = function(){
 			remindEle.for === 'username' && (remindEle.style.display = 'none');
 		};
-		var handler2 = (function(){
+		var validate2 = (function(){
+		//验证email
 			var reg = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-			return function(){
-				if(!reg.test(this.value)){
+			return function(callback){
+				if(!reg.test(emailEle.value)){
 					remindTextEle.nodeValue = 'Invalid email address.';
 					remindEle.style.top = '52px';
 					remindEle.style.display = 'block';
 					remindEle.for = 'email';
 					remindEle.cause = 'invalid';
 					return;
-				} else if(remindEle.cause === 'invalid'){
+				} else if(remindEle.for === 'email' && remindEle.cause === 'invalid'){
 					remindEle.style.display = 'none';
 				}
-				console.log('这里将进行email查重');
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST', '/checkEmail');
+				xhr.send( JSON.stringify({email: emailEle.value}) );
+				xhr.onload = function(){
+					if( !JSON.parse( xhr.responseText ).result ){
+						remindTextEle.nodeValue = 'Email is already taken.';
+						remindEle.style.top = '52px';
+						remindEle.style.display = 'block';
+						remindEle.for = 'email';
+						remindEle.cause = 'taken';
+						return;
+					} else{
+						if(remindEle.for === 'email' && remindEle.cause === 'taken'){
+							remindEle.style.display = 'none';
+						}
+						callback && callback();
+					}
+				};
 			};
 		}());
-		emailEle.onblur = handler2;
-		emailEle.oninput = function(){
+		emailEle.oninput = (function(){
+			var timer;
+			return function(){
+				clearTimeout(timer);
+				timer = setTimeout(validate2, 500);
+			};
+		}());
+		emailEle.onblur = function(){
 			if(remindEle.for = 'email'){
 				remindEle.style.display = 'none';
 			}
 		};
-		var handler3 = (function(){
-			var reg = /^[\w~`!@#$%^&*()_\-+=\{\}\[\]\\|;:'",<.>/?]{6,30}$/;
-			return function(){
-				if(this.value.length < 6){
+		var validate3 = (function(){
+		//验证password
+			var reg = /^[\w~`!@#$%^&*()_\-+=\{\}\[\]\\|;:'",<.>/?]{6,40}$/;
+			return function(callback){
+				if(passwordEle.value.length < 6){
 					remindTextEle.nodeValue = 'Password is too short (minimum is 6 characters).';
 					remindEle.style.top = '68px';
 					remindEle.style.display = 'block';
 					remindEle.for = 'password';
 					remindEle.cause = 'tooShort';
 					return;
+				} else if(remindEle.for === 'password' && remindEle.cause === 'tooShort'){
+					remindEle.style.display = 'none';
 				}
-				if(this.value.length > 30){
-					remindTextEle.nodeValue = 'Password is too long (maximum is 30 characters).';
+				if(passwordEle.value.length > 40){
+					remindTextEle.nodeValue = 'Password is too long (maximum is 40 characters).';
 					remindEle.style.top = '68px';
 					remindEle.style.display = 'block';
 					remindEle.for = 'password';
 					remindEle.cause = 'tooLong';
 					return;
+				} else if(remindEle.for === 'password' && remindEle.cause === 'tooLong'){
+					remindEle.style.display = 'none';
 				}
-				if( this.value.search(reg) === -1 ){
+				if( passwordEle.value.search(reg) === -1 ){
 					remindTextEle.nodeValue = 'Only alphanumeric characters and ~`!@#$%^&*()_-+={}[]\|;:\'\",<.>/? are allowed.';
 					remindEle.style.top = '68px';
 					remindEle.style.display = 'block';
 					remindEle.for = 'password';
 					remindEle.cause = 'badChar';
 					return;
+				} else{
+					if(remindEle.for === 'password' && remindEle.cause === 'badChar'){
+						remindEle.style.display = 'none';
+					}
+					callback && callback();
 				}
 			};
 		}());
-		passwordEle.onblur = handler3;
-		passwordEle.oninput = function(){
+		passwordEle.oninput = (function(){
+			var timer;
+			return function(){
+				clearTimeout(timer);
+				timer = setTimeout(validate3, 500);
+			};
+		}());
+		passwordEle.onblur = function(){
 			if(remindEle.for = 'password'){
 				remindEle.style.display = 'none';
 			}
 		};
+		submitEle.addEventListener('click', function(event){
+			event.preventDefault();//不使用form原生的submit事件
+			validate1(callback) && validate2(callback) && validate3(callback);
+			function callback(){
+				formEle.dispatchEvent( new Event('validatedSubmit') );
+			}
+		}, false);
 	}());
 }());
 
@@ -215,7 +291,7 @@
 //使用自定义的验证过的submit事件
 	var player = {
 		status: 'signout',
-		name: ''
+		username: ''
 	};
 	window.player = player;
 	(function(){
@@ -229,9 +305,9 @@
 			xhr.onload = function(){
 				console.log(xhr.responseText);////////////////////////////////////////////////////////////////////////////////////////
 				var responseJSON = JSON.parse(xhr.responseText);
-				if(responseJSON.status === 'signin'){
+				if(responseJSON.result){
 					player.status = 'signin';
-					player.name = responseJSON.name;
+					player.username = responseJSON.username;
 				} else{
 					document.querySelector('#signBox>.signIn>.warn').style.display = 'block';
 				}
@@ -241,8 +317,7 @@
 	(function(){
 	//此代码块负责注册表单的提交
 		var formEle = document.querySelector('#signUpForm');
-		formEle.addEventListener('submit', function(event){
-			event.preventDefault();
+		formEle.addEventListener('validatedSubmit', function(event){
 			console.log('Ok, you clicked the \'submit\' button. I got it.');
 		}, false);
 	}());

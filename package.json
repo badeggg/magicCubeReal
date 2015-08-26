@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/badeggg/magicCubeReal#readme",
   "dependencies": {
-	"express": "4.13.3"
+    "express": "4.13.3",
+    "multer": "^1.0.3",
+    "mysql": "2.8.0"
   }
 }
