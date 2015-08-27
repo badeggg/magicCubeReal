@@ -117,7 +117,11 @@
 		var validate1 = (function(){
 		//验证username
 			var reg = /^[\u4E00-\u9FA5\w]{1,40}$/;
-			return function(callback){
+			return function(cascade){
+			//cascade：布尔值
+			//cascade === true，那么将把validate2作为callback并执行，
+			//validate3作为validate2的callback并执行,
+			//最后‘触发validatedSubmie事件’作为validate3的callback
 				if(usernameEle.value === ''){
 					remindTextEle.nodeValue = 'Username can\'t be blank.';
 					remindEle.style.top = '19px';
@@ -163,7 +167,7 @@
 						if(remindEle.for === 'username' && remindEle.cause === 'taken'){
 							remindEle.style.display = 'none';
 						}
-						callback && callback();
+						cascade && validate2(true);
 					}
 				};
 			};
@@ -181,7 +185,10 @@
 		var validate2 = (function(){
 		//验证email
 			var reg = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-			return function(callback){
+			return function(cascade){
+			//cascade：布尔值
+			//cascade === true，那么将把validate3作为validate2的callback并执行,
+			//最后‘触发validatedSubmie事件’作为validate3的callback
 				if(!reg.test(emailEle.value)){
 					remindTextEle.nodeValue = 'Invalid email address.';
 					remindEle.style.top = '52px';
@@ -207,7 +214,7 @@
 						if(remindEle.for === 'email' && remindEle.cause === 'taken'){
 							remindEle.style.display = 'none';
 						}
-						callback && callback();
+						cascade && validate3(true);
 					}
 				};
 			};
@@ -227,7 +234,7 @@
 		var validate3 = (function(){
 		//验证password
 			var reg = /^[\w~`!@#$%^&*()_\-+=\{\}\[\]\\|;:'",<.>/?]{6,40}$/;
-			return function(callback){
+			return function(cascade){
 				if(passwordEle.value.length < 6){
 					remindTextEle.nodeValue = 'Password is too short (minimum is 6 characters).';
 					remindEle.style.top = '68px';
@@ -259,7 +266,7 @@
 					if(remindEle.for === 'password' && remindEle.cause === 'badChar'){
 						remindEle.style.display = 'none';
 					}
-					callback && callback();
+					cascade && formEle.dispatchEvent( new Event('validatedSubmit') );
 				}
 			};
 		}());
@@ -277,10 +284,7 @@
 		};
 		submitEle.addEventListener('click', function(event){
 			event.preventDefault();//不使用form原生的submit事件
-			validate1(callback) && validate2(callback) && validate3(callback);
-			function callback(){
-				formEle.dispatchEvent( new Event('validatedSubmit') );
-			}
+			validate1(true);//带有true参数地执行validate1将会执行一系列地执行validate2，validate3,并触发validatedSubmit事件如果表单通过系列验证的话
 		}, false);
 	}());
 }());
