@@ -2,65 +2,83 @@
 //此文件负责玩家注册/登录
 (function(){
 //此代码块主要负责交互（不和服务器打交道的交互）
-	var signInLableEle = document.querySelector('.signInLable'),
-		signUpLableEle = document.querySelector('.signUpLable'),
-		signInEle = document.querySelector('.signIn'),
-		signUpEle = document.querySelector('.signUp'),
-		signBoxEle = document.getElementById('signBox'),
-		closeEle = document.querySelector('.close'),
-		shadeEle = document.querySelector('#shade'),
-		stickEle = document.querySelector('.stick');
-	signBoxEle.addEventListener('mouseenter', handler1, false);
-	signBoxEle.addEventListener('mouseleave', handler2, false);
-	function handler1(){
-	//handler to show signUpLableEle
-		signUpLableEle.style.width = '150px';
-		stickEle.style.display = 'inline-block';
-	};
-	function handler2(){
-	//handler to hide signUpLableEle
-		signUpLableEle.style.width = '0px';
-		stickEle.style.display = 'none';
-	};
-	signInLableEle.addEventListener('click', function(){
-		signInEle.style.display = 'block';
-		signUpEle.style.display = 'none';
-		closeEle.style.display = 'block';
-		shadeEle.style.display = 'block';
-		this.style.borderBottom = 'none';
-		signUpLableEle.style.borderBottom = '2px solid white';
-		try{
-			signBoxEle.removeEventListener('mouseenter', handler1, false);
-			signBoxEle.removeEventListener('mouseleave', handler2, false);
-		}catch(err){
-			console.log(err);
-		}
-	}, false);
-	signUpLableEle.addEventListener('click', function(){
-		signUpEle.style.display = 'block';
-		signInEle.style.display = 'none';
-		closeEle.style.display = 'block';
-		shadeEle.style.display = 'block';
-		this.style.borderBottom = 'none';
-		signInLableEle.style.borderBottom = '2px solid white';
-		try{
-			signBoxEle.removeEventListener('mouseenter', handler1, false);
-			signBoxEle.removeEventListener('mouseleave', handler2, false);
-		}catch(err){
-			console.log(err);
-		}
-	}, false);
-	closeEle.addEventListener('click', function(){
-		signUpEle.style.display = 'none';
-		signInEle.style.display = 'none';
-		closeEle.style.display = 'none';
-		shadeEle.style.display = 'none';
-		signUpLableEle.style.width = '0px';
-		signInLableEle.style.borderBottom = 'none';
-		signUpLableEle.style.borderBottom = 'none';
+	(function(){
+	//负责登录之前的div交互，即 #signBox
+		var signInLableEle = document.querySelector('.signInLable'),
+			signUpLableEle = document.querySelector('.signUpLable'),
+			signInEle = document.querySelector('.signIn'),
+			signUpEle = document.querySelector('.signUp'),
+			signBoxEle = document.getElementById('signBox'),
+			closeEle = document.querySelector('.close'),
+			shadeEle = document.querySelector('#shade'),
+			stickEle = document.querySelector('.stick');
 		signBoxEle.addEventListener('mouseenter', handler1, false);
 		signBoxEle.addEventListener('mouseleave', handler2, false);
-	}, false);
+		function handler1(){
+		//handler to show signUpLableEle
+			signUpLableEle.style.width = '150px';
+			stickEle.style.display = 'inline-block';
+		};
+		function handler2(){
+		//handler to hide signUpLableEle
+			signUpLableEle.style.width = '0px';
+			stickEle.style.display = 'none';
+		};
+		signInLableEle.addEventListener('click', function(){
+			signInEle.style.display = 'block';
+			signUpEle.style.display = 'none';
+			closeEle.style.display = 'block';
+			shadeEle.style.display = 'block';
+			this.style.borderBottom = 'none';
+			signUpLableEle.style.borderBottom = '2px solid white';
+			try{
+				signBoxEle.removeEventListener('mouseenter', handler1, false);
+				signBoxEle.removeEventListener('mouseleave', handler2, false);
+			}catch(err){
+				console.log(err);
+			}
+		}, false);
+		signUpLableEle.addEventListener('click', function(){
+			signUpEle.style.display = 'block';
+			signInEle.style.display = 'none';
+			closeEle.style.display = 'block';
+			shadeEle.style.display = 'block';
+			this.style.borderBottom = 'none';
+			signInLableEle.style.borderBottom = '2px solid white';
+			try{
+				signBoxEle.removeEventListener('mouseenter', handler1, false);
+				signBoxEle.removeEventListener('mouseleave', handler2, false);
+			}catch(err){
+				console.log(err);
+			}
+		}, false);
+		closeEle.addEventListener('click', function(){
+			signUpEle.style.display = 'none';
+			signInEle.style.display = 'none';
+			closeEle.style.display = 'none';
+			shadeEle.style.display = 'none';
+			signUpLableEle.style.width = '0px';
+			signInLableEle.style.borderBottom = 'none';
+			signUpLableEle.style.borderBottom = 'none';
+			signBoxEle.addEventListener('mouseenter', handler1, false);
+			signBoxEle.addEventListener('mouseleave', handler2, false);
+		}, false);
+	}());
+	(function(){
+	//负责登录之后的div交互，即 #userBox
+		var userBoxEle = document.querySelector('#userBox'),
+			userEle = userBoxEle.querySelector('.user'),
+			stickEle = userBoxEle.querySelector('.stick'),
+			signOutEle = userBoxEle.querySelector('.signOut');
+		userBoxEle.onmouseenter = function(){
+			signOutEle.style.width = '150px';
+			stickEle.style.display = 'inline-block';
+		};
+		userBoxEle.onmouseleave = function(){
+			signOutEle.style.width = '0px';
+			stickEle.style.display = 'none';
+		};
+	}());
 }());
 
 (function(){
@@ -301,28 +319,52 @@
 	(function(){
 	//此代码块负责登录表单的提交
 		var formEle = document.querySelector('#signInForm');
-		formEle.addEventListener('validatedSubmit', function(event){
-			var formData = new FormData(this),
-				xhr = new XMLHttpRequest();
-			xhr.open('POST', '/signIn');
-			xhr.send(formData);
-			xhr.onload = function(){
-				console.log(xhr.responseText);////////////////////////////////////////////////////////////////////////////////////////
-				var responseJSON = JSON.parse(xhr.responseText);
-				if(responseJSON.result){
-					player.status = 'signin';
-					player.username = responseJSON.username;
-				} else{
-					document.querySelector('#signBox>.signIn>.warn').style.display = 'block';
-				}
-			};
-		}, false);
+		formEle.addEventListener('validatedSubmit', (function(){
+			var signBoxEle = document.getElementById('signBox'),
+				userBoxEle = document.getElementById('userBox'),
+				shadeEle = document.getElementById('shade'),
+				userEle = userBoxEle.querySelector('.user');
+			return function(event){
+				var formData = new FormData(this),
+					xhr = new XMLHttpRequest();
+				xhr.open('POST', '/signIn');
+				xhr.send(formData);
+				xhr.onload = function(){
+					console.log(xhr.responseText);////////////////////////////////////////////////////////////////////////////////////////
+					var responseJSON = JSON.parse(xhr.responseText);
+					if(responseJSON.result){
+						player.status = 'signin';
+						player.username = responseJSON.username;
+						signBoxEle.style.display = 'none';
+						userBoxEle.style.display = 'block';
+						shadeEle.style.display = 'none';
+						userEle.firstChild.nodeValue = player.username;
+					} else{
+						document.querySelector('#signBox>.signIn>.warn').style.display = 'block';
+					}
+				};
+			}			
+		}()), false);
 	}());
 	(function(){
 	//此代码块负责注册表单的提交
-		var formEle = document.querySelector('#signUpForm');
+		var formEle = document.querySelector('#signUpForm'),
+			usernameEle = formEle.querySelector('input[name = "signUpUsername"]'),
+			emailEle = formEle.querySelector('input[name = "email"]'),
+			passwordEle = formEle.querySelector('input[name = "signUpPassword"]');
 		formEle.addEventListener('validatedSubmit', function(event){
 			console.log('Ok, you clicked the \'submit\' button. I got it.');
+			var formData = new FormData(this),
+				xhr = new XMLHttpRequest();
+			usernameEle.value = '';
+			emailEle.value = '';
+			passwordEle.value = '';
+			xhr.open('POST', '/signUp');
+			xhr.send(formData);
+			xhr.onload = function(){
+				console.log(xhr.responseText);///////////////////////////////////////////////////////////////////////
+				//var responseJson = JSON.parse(xhr.responseText);
+			};
 		}, false);
 	}());
 }());

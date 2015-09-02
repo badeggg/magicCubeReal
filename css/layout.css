@@ -72,7 +72,7 @@
 /*以上一节是玩家输入魔方阶数的样式*/
 
 /*以下一节是登录/注册的样式*/
-#signBox{
+#signBox, #userBox{
 	position: fixed;
 	left: 0;
 	top: 0;
@@ -89,7 +89,7 @@ input{
 input:focus{
 	outline: none;
 }
-#signBox>:nth-child(-n + 3){
+#signBox>:nth-child(-n + 3), #userBox>:nth-child(-n + 3){
 	font-size: 1.5rem;
 	display: inline-block;
 	width: 150px;
@@ -100,28 +100,47 @@ input:focus{
 	box-sizing: border-box;
 	vertical-align: bottom;
 }
-#signBox>.stick{
+#signBox>.stick, #userBox>.stick{
 	width: 2px;
 	background-color: white;
 	display: none;
 }
-#signBox>.signInLable{
+#signBox>.signInLable, #userBox>.user{
 	background-color: rgba(223, 239, 255, 1);
 }
-#signBox>.signUpLable{
+#signBox>.signUpLable, #userBox>.signOut{
 	background-color: rgba(188, 253, 188, 1);
 	width: 0;
 	overflow: hidden;
 	white-space: nowrap;
 	transition: width 0.22s;
 }
-#signBox>.signInLable:hover{
+#userBox>.user{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	padding: 6px 8px 0px;
+	color: white;
+	background-color: rgb(116, 151, 187);
+}
+#userBox>.signOut{
+	color: white;
+	background-color: rgb(75, 139, 208);
+}
+#signBox>.signInLable:hover, #signBox>.signUpLable:hover, #userBox>.user:hover, #userBox>.signOut:hover{
 	cursor: pointer;
-	background-color: rgba(223, 239, 255, 0.69)
+}
+#signBox>.signInLable:hover{
+	background-color: rgba(223, 239, 255, 0.69);
 }
 #signBox>.signUpLable:hover{
-	cursor: pointer;
-	background-color: rgba(188, 253, 188, 0.69)
+	background-color: rgba(188, 253, 188, 0.69);
+}
+#userBox>.user:hover{
+	background-color: rgba(116, 151, 187, 0.69);
+}
+#userBox>.signOut:hover{
+	background-color: rgba(75, 139, 208, 0.69);
 }
 #signBox>.signIn, #signBox>.signUp{
 	width: 100%;
@@ -288,6 +307,10 @@ input[type = 'submit']:hover{
 }
 #signBox form{
 	position: relative;
+}
+#userBox{
+	display: none;
+	z-index: 30;
 }
 /*以上一节是登录/注册的样式*/
 

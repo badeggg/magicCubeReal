@@ -66,6 +66,19 @@ app.post('/checkEmail', function(req, res){
 		});
 	});
 });
+app.post('/signUp', upload.array(), function(req, res){
+	server.register({
+		req: req,
+		res: res,
+		db: db,
+		username: req.body.signUpUsername,
+		password: req.body.signUpPassword,
+		email: req.body.email,
+		callback: function(req, res, result){
+			res.end( JSON.stringify({result: result, username: req.body.signUpUsername}) );
+		}
+	});
+});
 app.listen(3000);
 
 
