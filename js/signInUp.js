@@ -66,7 +66,8 @@
 	}());
 	(function(){
 	//负责登录之后的div交互，即 #userBox
-		var userBoxEle = document.querySelector('#userBox'),
+		var signBoxEle = document.getElementById('signBox'),
+			userBoxEle = document.querySelector('#userBox'),
 			userEle = userBoxEle.querySelector('.user'),
 			stickEle = userBoxEle.querySelector('.stick'),
 			signOutEle = userBoxEle.querySelector('.signOut');
@@ -77,6 +78,11 @@
 		userBoxEle.onmouseleave = function(){
 			signOutEle.style.width = '0px';
 			stickEle.style.display = 'none';
+		};
+		signOutEle.onclick = function(){
+			signBoxEle.style.display = 'block';
+			userBoxEle.style.display = 'none';
+			console.log(document.cookie);
 		};
 	}());
 }());
@@ -308,14 +314,9 @@
 }());
 
 (function(){
-//此代码块主要负责通过合法性验证的表单提交
+//此代码块主要负责通过合法性验证的表单的提交
 //不使用form原生的submit事件
 //使用自定义的验证过的submit事件
-	var player = {
-		status: 'signout',
-		username: ''
-	};
-	window.player = player;
 	(function(){
 	//此代码块负责登录表单的提交
 		var formEle = document.querySelector('#signInForm'),
@@ -335,12 +336,11 @@
 			xhr.onload = function(){
 				var responseJSON = JSON.parse(xhr.responseText);
 				if(responseJSON.result){
-					player.status = 'signin';
-					player.username = responseJSON.username;
 					signBoxEle.style.display = 'none';
 					userBoxEle.style.display = 'block';
 					shadeEle.style.display = 'none';
-					userEle.firstChild.nodeValue = player.username;
+					userEle.firstChild.nodeValue = responseJSON.username;
+					document.cookie = 'user = ' + responseJSON.username + '; max-age = ' + 60*60*24*60;
 				} else{
 					document.querySelector('#signBox>.signIn>.warn').style.display = 'block';
 				}
@@ -369,12 +369,11 @@
 			xhr.onload = function(){
 				var responseJSON = JSON.parse(xhr.responseText);
 				if(responseJSON.result){
-					player.status = 'signin';
-					player.username = responseJSON.username;
 					signBoxEle.style.display = 'none';
 					userBoxEle.style.display = 'block';
 					shadeEle.style.display = 'none';
-					userEle.firstChild.nodeValue = player.username;
+					userEle.firstChild.nodeValue = responseJSON.username;
+					document.cookie = 'user = ' + responseJSON.username + '; max-age = ' + 60*60*24*60;
 				} else{
 					document.querySelector('#signBox>.signUp>.warn').style.display = 'block';
 				}
