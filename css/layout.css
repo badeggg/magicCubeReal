@@ -258,7 +258,7 @@ input[type = 'submit']:focus{
 input[type = 'submit']:hover{
 	background-color: rgb(245, 103, 103);
 }
-#signBox>.signIn>.warn{
+#signBox>.signIn>.warn, #signBox>.signUp>.warn{
 	display: none;
 	font-size: 1rem;
 	background-color: yellow;

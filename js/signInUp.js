@@ -318,40 +318,45 @@
 	window.player = player;
 	(function(){
 	//此代码块负责登录表单的提交
-		var formEle = document.querySelector('#signInForm');
-		formEle.addEventListener('validatedSubmit', (function(){
-			var signBoxEle = document.getElementById('signBox'),
-				userBoxEle = document.getElementById('userBox'),
-				shadeEle = document.getElementById('shade'),
-				userEle = userBoxEle.querySelector('.user');
-			return function(event){
-				var formData = new FormData(this),
-					xhr = new XMLHttpRequest();
-				xhr.open('POST', '/signIn');
-				xhr.send(formData);
-				xhr.onload = function(){
-					console.log(xhr.responseText);////////////////////////////////////////////////////////////////////////////////////////
-					var responseJSON = JSON.parse(xhr.responseText);
-					if(responseJSON.result){
-						player.status = 'signin';
-						player.username = responseJSON.username;
-						signBoxEle.style.display = 'none';
-						userBoxEle.style.display = 'block';
-						shadeEle.style.display = 'none';
-						userEle.firstChild.nodeValue = player.username;
-					} else{
-						document.querySelector('#signBox>.signIn>.warn').style.display = 'block';
-					}
-				};
-			}			
-		}()), false);
+		var formEle = document.querySelector('#signInForm'),
+			usernameEle = formEle.querySelector('[type = "text"]'),
+			passwordEle = formEle.querySelector('[type = "password"]'),
+			signBoxEle = document.getElementById('signBox'),
+			userBoxEle = document.getElementById('userBox'),
+			shadeEle = document.getElementById('shade'),
+			userEle = userBoxEle.querySelector('.user');
+		formEle.addEventListener('validatedSubmit', function(event){
+			var formData = new FormData(this),
+				xhr = new XMLHttpRequest();
+			usernameEle.value = '';
+			passwordEle.value = '';
+			xhr.open('POST', '/signIn');
+			xhr.send(formData);
+			xhr.onload = function(){
+				var responseJSON = JSON.parse(xhr.responseText);
+				if(responseJSON.result){
+					player.status = 'signin';
+					player.username = responseJSON.username;
+					signBoxEle.style.display = 'none';
+					userBoxEle.style.display = 'block';
+					shadeEle.style.display = 'none';
+					userEle.firstChild.nodeValue = player.username;
+				} else{
+					document.querySelector('#signBox>.signIn>.warn').style.display = 'block';
+				}
+			};
+		}, false);
 	}());
 	(function(){
 	//此代码块负责注册表单的提交
 		var formEle = document.querySelector('#signUpForm'),
 			usernameEle = formEle.querySelector('input[name = "signUpUsername"]'),
 			emailEle = formEle.querySelector('input[name = "email"]'),
-			passwordEle = formEle.querySelector('input[name = "signUpPassword"]');
+			passwordEle = formEle.querySelector('input[name = "signUpPassword"]'),
+			signBoxEle = document.getElementById('signBox'),
+			userBoxEle = document.getElementById('userBox'),
+			shadeEle = document.getElementById('shade'),
+			userEle = userBoxEle.querySelector('.user');
 		formEle.addEventListener('validatedSubmit', function(event){
 			console.log('Ok, you clicked the \'submit\' button. I got it.');
 			var formData = new FormData(this),
@@ -362,8 +367,17 @@
 			xhr.open('POST', '/signUp');
 			xhr.send(formData);
 			xhr.onload = function(){
-				console.log(xhr.responseText);///////////////////////////////////////////////////////////////////////
-				//var responseJson = JSON.parse(xhr.responseText);
+				var responseJSON = JSON.parse(xhr.responseText);
+				if(responseJSON.result){
+					player.status = 'signin';
+					player.username = responseJSON.username;
+					signBoxEle.style.display = 'none';
+					userBoxEle.style.display = 'block';
+					shadeEle.style.display = 'none';
+					userEle.firstChild.nodeValue = player.username;
+				} else{
+					document.querySelector('#signBox>.signUp>.warn').style.display = 'block';
+				}
 			};
 		}, false);
 	}());
