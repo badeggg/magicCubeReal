@@ -7,10 +7,11 @@ var multer = require('multer');
 var upload = multer();
 
 var db = mysql.createConnection({
-	host: 'localhost',
-	user: 'root',
+	host: 'rdsns6n19tcure251w3d.mysql.rds.aliyuncs.com',
+	port: 3306,
+	user: 'r8u3fekrn7hap7r8',
 	password: 'freedom',
-	database: 'magiccube'
+	database: 'r8u3fekrn7hap7r8'
 });
 
 var app = express();

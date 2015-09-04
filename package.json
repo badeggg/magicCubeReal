@@ -1,7 +1,7 @@
 {
   "name": "magic_cube_real",
   "version": "0.0.1",
-  "description": "a magic cube in web page.",
+  "description": "a magic cube on web page.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,5 +20,6 @@
     "express": "4.13.3",
     "multer": "^1.0.3",
     "mysql": "2.8.0"
-  }
+  },
+  "main": "index.js"
 }
