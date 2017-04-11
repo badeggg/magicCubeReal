@@ -18,7 +18,7 @@ main{
 	flex-grow: 8;
 	min-width: 300px;
 	min-height: 300px;
-	background-color: #C7C6C7;
+	background-color: rgb(222, 229, 218);
 	position: relative;
 }
 #cube{
